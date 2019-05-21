@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Arduino", "Arduino\Arduino.csproj", "{64F3E6E0-59C8-411D-9CBA-C2286C18FE62}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Development", "Development", "{4F320BEE-9EA7-4B81-B8FF-BA6D4DAF439E}"
+	ProjectSection(SolutionItems) = preProject
+		Development\appsettings.PC0GA42D.json = Development\appsettings.PC0GA42D.json
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{64F3E6E0-59C8-411D-9CBA-C2286C18FE62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64F3E6E0-59C8-411D-9CBA-C2286C18FE62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64F3E6E0-59C8-411D-9CBA-C2286C18FE62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64F3E6E0-59C8-411D-9CBA-C2286C18FE62}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3EDB9B74-773F-4F5E-BDC7-52B5DFA3CFAA}
+	EndGlobalSection
+EndGlobal

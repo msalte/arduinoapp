@@ -1,0 +1,41 @@
+.topbar {
+    z-index: 99;
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: var(--bg-sidebar);
+    height: var(--height-topbar);
+    box-sizing: border-box;
+    width: 100%;
+    border-bottom: 1px solid var(--border-color-sidebar);
+    padding: 0 calc(var(--grid-unit) * 2px);
+    justify-content: space-between;
+
+    .brand {
+        height: 100%;
+        color: var(--text-color-sidebar);
+        align-self: center;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        text-decoration: none;
+        cursor: pointer;
+
+        @media only screen and (max-width: 767px) {
+            padding: 0 calc(var(--grid-unit) * 2px);
+            margin-right: calc(var(--grid-unit) * 2px);
+        }
+    }
+
+    .tools {
+        display: flex;
+        flex-direction: row;
+
+        > button,
+        a {
+            margin-left: calc(var(--grid-unit) * 1px);
+            flex-shrink: 0;
+        }
+    }
+}
