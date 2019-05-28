@@ -27,6 +27,7 @@ steps:
   inputs:
     command: 'publish'
     publishWebProjects: false
+    projects: '$(ProjectPath)/*.csproj'
     feedsToUse: 'select'
     versioningScheme: 'off'
 - task: PublishBuildArtifacts@1
