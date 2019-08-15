@@ -22,19 +22,11 @@ module.exports = {
             {
                 test: /\.js?/,
                 include: SOURCE_DIR,
-                exclude: [
-                    path.resolve(
-                        SOURCE_DIR,
-                        "ext/az-storage/azure-storage.blob.min.js"
-                    ),
-                ],
+                exclude: [path.resolve(SOURCE_DIR, "ext/az-storage/azure-storage.blob.min.js")],
                 loader: "babel-loader",
                 options: {
                     presets: ["@babel/preset-react"],
-                    plugins: [
-                        require("@babel/plugin-proposal-class-properties")
-                            .default,
-                    ],
+                    plugins: [require("@babel/plugin-proposal-class-properties").default],
                 },
             },
             {
@@ -74,11 +66,19 @@ module.exports = {
                     "css-loader", // translates CSS into CommonJS
                 ],
             },
+
             {
                 test: /\.(woff2?|ttf|svg|eot)(\?v=\d+\.\d+\.\d+)?$/,
                 loader: "file-loader",
                 options: {
                     outputPath: "/fonts",
+                },
+            },
+            {
+                test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+                loader: "url-loader",
+                options: {
+                    limit: 10000,
                 },
             },
         ],

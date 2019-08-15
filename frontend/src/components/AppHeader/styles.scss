@@ -1,0 +1,9 @@
+.container {
+    background: #f1f1f1;
+    padding: 16px;
+    border-bottom: 1px solid #ccc;
+
+    > span {
+        margin-right: 16px;
+    }
+}
