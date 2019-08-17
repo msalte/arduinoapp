@@ -23,37 +23,37 @@ export default (data, themeContext) => {
         },
         series: [
             {
-                name: "Sensor 1",
+                name: "EG1",
                 yAxis: 0,
                 data: sensor1Data,
             },
             {
-                name: "Sensor 2",
+                name: "EG2",
                 yAxis: 0,
                 data: sensor2Data,
             },
             {
-                name: "Sensor 3",
+                name: "EG3",
                 yAxis: 0,
                 data: sensor3Data,
             },
             {
-                name: "Sensor 4",
+                name: "EG4",
                 yAxis: 0,
                 data: sensor4Data,
             },
             {
-                name: "Sensor 5",
+                name: "EG5",
                 yAxis: 0,
                 data: sensor5Data,
             },
             {
-                name: "Sensor 6",
+                name: "EG6",
                 yAxis: 0,
                 data: sensor6Data,
             },
             {
-                name: "Average",
+                name: "AVG",
                 yAxis: 0,
                 data: averageData,
             },
