@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Chart from "./Chart";
 import { fetch } from "global/fetch";
 import exhaustOptions from "./chartOptions/exhaust";
 import miscOptions from "./chartOptions/misc";
 import pressureOptions from "./chartOptions/pressure";
 import styles from "./styles.scss";
+import { Icon, Card } from "semantic-ui-react";
 
 export default ({ match }) => {
     const {
@@ -12,12 +13,19 @@ export default ({ match }) => {
     } = match;
 
     if (!segment) {
-        return <div>Hello world!</div>;
+        return (
+            <Card color="blue">
+                <Card.Content>
+                    <Icon name="arrow right" /> Arduino graph collection
+                </Card.Content>
+                <Card.Content>Start by selecting a segment in the top menu...</Card.Content>
+            </Card>
+        );
     }
 
-    const exhaustDataPromise = () => fetch(`/data/${segment}/exhaust`);
-    const pressureDataPromise = () => fetch(`/data/${segment}/pressure`);
-    const miscDataPromise = () => fetch(`/data/${segment}/misc`);
+    const exhaustDataPromise = useCallback(() => fetch(`/data/${segment}/exhaust`), [segment]);
+    const pressureDataPromise = useCallback(() => fetch(`/data/${segment}/pressure`), [segment]);
+    const miscDataPromise = useCallback(() => fetch(`/data/${segment}/misc`), [segment]);
 
     return (
         <div className={styles.container}>

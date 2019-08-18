@@ -1,6 +1,6 @@
 .chartContainer {
     width: 33.33%;
-    margin: calc(var(--grid-unit) * 1px);
+    padding: calc(var(--grid-unit) * 1px);
 
     @media only screen and (max-width: 767px) {
         // takes up up all horizontal space
