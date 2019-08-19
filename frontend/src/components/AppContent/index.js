@@ -31,7 +31,7 @@ export default ({ match }) => {
                 <Card.Content>
                     <Icon name="arrow right" /> Arduino graph collection
                 </Card.Content>
-                <Card.Content>Start by selecting a segment in the top menu...</Card.Content>
+                <Card.Content>Start by selecting a tractor and a segment in the top menu...</Card.Content>
             </Card>
         );
     }

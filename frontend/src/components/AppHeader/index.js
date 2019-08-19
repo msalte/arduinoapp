@@ -32,6 +32,7 @@ const TractorPicker = ({ defaultValue, onSelect }) => {
         <Menu.Item name="tractor">
             {isFetching && <Loader size="tiny" active />}
             {error && error}
+            <Icon name="microchip" />
             <Dropdown
                 key={defaultValue}
                 search
@@ -77,6 +78,7 @@ const SegmentPicker = ({ tractor, defaultValue, onSelect }) => {
         <Menu.Item name="segment">
             {isFetching && <Loader size="tiny" active />}
             {error && error}
+            <Icon name="chart line" />
             <Dropdown
                 disabled={isFetching || tractor === undefined}
                 search
