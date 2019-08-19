@@ -10,10 +10,10 @@ namespace Arduino.Repository
 {
     public interface ISensorDataRepository
     {
-        Task<ExhaustData> GetExhaustDataAsync(string folder);
-        Task<PressureData> GetPressureDataAsync(string folder);
-        Task<MiscData> GetMiscDataAsync(string folder);
-        Task<List<string>> ListDataFoldersAsync();
+        Task<ExhaustData> GetExhaustDataAsync(string tractor, string segment);
+        Task<PressureData> GetPressureDataAsync(string tractor, string segment);
+        Task<MiscData> GetMiscDataAsync(string tractor, string segment);
+        Task<List<string>> ListFolder(string parent);
         Task<string> GenerateSharedAccessSignature();
     }
 
@@ -37,9 +37,9 @@ namespace Arduino.Repository
             return await _blobStorageClient.GenerateSASForContainer(BLOB_CONTAINER_NAME);
         }
 
-        public async Task<ExhaustData> GetExhaustDataAsync(string folder)
+        public async Task<ExhaustData> GetExhaustDataAsync(string tractor, string segment)
         {
-            var path = $"{folder}/{BLOB_NAME_EXHAUST}";
+            var path = $"{tractor}/data/{segment}/{BLOB_NAME_EXHAUST}";
 
             var text = await _blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
 
@@ -53,9 +53,9 @@ namespace Arduino.Repository
             return SensorDataParser.Exhaust.Parse(lines);
         }
 
-        public async Task<MiscData> GetMiscDataAsync(string folder)
+        public async Task<MiscData> GetMiscDataAsync(string tractor, string segment)
         {
-            var path = $"{folder}/{BLOB_NAME_MISC}";
+            var path = $"{tractor}/data/{segment}/{BLOB_NAME_MISC}";
 
             var text = await _blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
 
@@ -69,9 +69,9 @@ namespace Arduino.Repository
             return SensorDataParser.Misc.Parse(lines);
         }
 
-        public async Task<PressureData> GetPressureDataAsync(string folder)
+        public async Task<PressureData> GetPressureDataAsync(string tractor, string segment)
         {
-            var path = $"{folder}/{BLOB_NAME_PRESSURE}";
+            var path = $"{tractor}/data/{segment}/{BLOB_NAME_PRESSURE}";
 
             var text = await _blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
 
@@ -85,9 +85,9 @@ namespace Arduino.Repository
             return SensorDataParser.Pressure.Parse(lines);
         }
 
-        public async Task<List<string>> ListDataFoldersAsync()
+        public async Task<List<string>> ListFolder(string path)
         {
-            var uris = await _blobStorageClient.ListFoldersAsync(BLOB_CONTAINER_NAME);
+            var uris = await _blobStorageClient.ListFolder(BLOB_CONTAINER_NAME, path);
 
             var folderNames = uris.Select(i => i.Segments.Last().Replace("/", "")).ToList();
 

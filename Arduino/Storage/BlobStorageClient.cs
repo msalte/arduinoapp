@@ -11,7 +11,7 @@ namespace Arduino.Storage
     public interface IBlobStorageClient
     {
         Task<string> ReadBlobAsStringAsync(string containerName, string path);
-        Task<List<Uri>> ListFoldersAsync(string containerName);
+        Task<List<Uri>> ListFolder(string containerName, string path);
         Task<string> GenerateSASForContainer(string containerName);
     }
 
@@ -26,11 +26,13 @@ namespace Arduino.Storage
             _blobClient = _storageAccount.CreateCloudBlobClient();
         }
 
-        public async Task<List<Uri>> ListFoldersAsync(string containerName)
+        public async Task<List<Uri>> ListFolder(string containerName, string path)
         {
             var container = _blobClient.GetContainerReference(containerName);
 
             await container.CreateIfNotExistsAsync();
+
+            var dir = container.GetDirectoryReference(path);
 
             var folders = new List<Uri>();
 
@@ -38,7 +40,7 @@ namespace Arduino.Storage
 
             do
             {
-                var resultSegment = await container.ListBlobsSegmentedAsync(continuationToken);
+                var resultSegment = await dir.ListBlobsSegmentedAsync(continuationToken);
                 var folderUris = resultSegment.Results.Select(r => r.Uri);
 
 

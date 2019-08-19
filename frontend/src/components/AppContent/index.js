@@ -9,10 +9,23 @@ import { Icon, Card } from "semantic-ui-react";
 
 export default ({ match }) => {
     const {
-        params: { segment },
+        params: { tractor, segment },
     } = match;
 
-    if (!segment) {
+    const exhaustDataPromise = useCallback(
+        () => fetch(`/tractors/${tractor}/segments/${segment}/exhaust`),
+        [segment]
+    );
+    const pressureDataPromise = useCallback(
+        () => fetch(`/tractors/${tractor}/segments/${segment}/pressure`),
+        [segment]
+    );
+    const miscDataPromise = useCallback(
+        () => fetch(`/tractors/${tractor}/segments/${segment}/misc`),
+        [segment]
+    );
+
+    if (!tractor || !segment) {
         return (
             <Card color="blue">
                 <Card.Content>
@@ -22,10 +35,6 @@ export default ({ match }) => {
             </Card>
         );
     }
-
-    const exhaustDataPromise = useCallback(() => fetch(`/data/${segment}/exhaust`), [segment]);
-    const pressureDataPromise = useCallback(() => fetch(`/data/${segment}/pressure`), [segment]);
-    const miscDataPromise = useCallback(() => fetch(`/data/${segment}/misc`), [segment]);
 
     return (
         <div className={styles.container}>

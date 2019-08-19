@@ -18,7 +18,7 @@ export default () => {
         <div className={classNames(styles.container)}>
             <Switch>
                 <Route path="/" exact component={AppWrapper} />
-                <Route path="/:segment" render={props => <AppWrapper {...props} />} />
+                <Route path="/:tractor/:segment" render={props => <AppWrapper {...props} />} />
             </Switch>
         </div>
     );

@@ -1,7 +1,5 @@
 ﻿using Arduino.Repository;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,18 +23,25 @@ namespace Arduino.Controllers
         //    return Ok(sas);
         //}
 
-        [HttpGet("data/folders")]
-        public async Task<IActionResult> GetAllDatesWithDataAsync()
+        [HttpGet("tractors")]
+        public async Task<IActionResult> GetAllTractors()
         {
-            var folders = await _sensorDataRepository.ListDataFoldersAsync();
-
+            var folders = await _sensorDataRepository.ListFolder(string.Empty);
             return Ok(folders.OrderByDescending(s => s));
         }
 
-        [HttpGet("data/{folder}/exhaust")]
-        public async Task<IActionResult> GetExhaustDataAsync(string folder)
+        [HttpGet("tractors/{tractor}/segments")]
+        public async Task<IActionResult> GetSegmentsForTractor(string tractor)
         {
-            var data = await _sensorDataRepository.GetExhaustDataAsync(folder);
+            var path = $"{tractor}/data";
+            var folders = await _sensorDataRepository.ListFolder(path);
+            return Ok(folders.OrderByDescending(s => s));
+        }
+
+        [HttpGet("tractors/{tractor}/segments/{segment}/exhaust")]
+        public async Task<IActionResult> GetExhaustDataAsync(string tractor, string segment)
+        {
+            var data = await _sensorDataRepository.GetExhaustDataAsync(tractor, segment);
 
             if (data != null)
             {
@@ -46,10 +51,10 @@ namespace Arduino.Controllers
             return NotFound("Could not find any exhaust data.");
         }
 
-        [HttpGet("data/{folder}/misc")]
-        public async Task<IActionResult> GetMiscDataAsync(string folder)
+        [HttpGet("tractors/{tractor}/segments/{segment}/misc")]
+        public async Task<IActionResult> GetMiscDataAsync(string tractor, string segment)
         {
-            var data = await _sensorDataRepository.GetMiscDataAsync(folder);
+            var data = await _sensorDataRepository.GetMiscDataAsync(tractor, segment);
 
             if (data != null)
             {
@@ -59,10 +64,10 @@ namespace Arduino.Controllers
             return NotFound("Could not find any misc data.");
         }
 
-        [HttpGet("data/{folder}/pressure")]
-        public async Task<IActionResult> GetPressureDataAsync(string folder)
+        [HttpGet("tractors/{tractor}/segments/{segment}/pressure")]
+        public async Task<IActionResult> GetPressureDataAsync(string tractor, string segment)
         {
-            var data = await _sensorDataRepository.GetPressureDataAsync(folder);
+            var data = await _sensorDataRepository.GetPressureDataAsync(tractor, segment);
 
             if (data != null)
             {
