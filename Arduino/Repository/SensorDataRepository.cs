@@ -1,6 +1,7 @@
 ﻿using Arduino.Business;
 using Arduino.Models;
 using Arduino.Storage;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,8 @@ namespace Arduino.Repository
 
         private readonly IBlobStorageClient _blobStorageClient;
 
+        private static Dictionary<string, ParserOptions> _parserOptions = new Dictionary<string, ParserOptions>();
+
         public SensorDataRepository(IBlobStorageClient blobStorageClient)
         {
             _blobStorageClient = blobStorageClient;
@@ -35,6 +38,23 @@ namespace Arduino.Repository
         public async Task<string> GenerateSharedAccessSignature()
         {
             return await _blobStorageClient.GenerateSASForContainer(BLOB_CONTAINER_NAME);
+        }
+
+        private async Task<ParserOptions> GetParserOptions(string tractor)
+        {
+            var path = $"{tractor}/options.json";
+
+            if (_parserOptions.TryGetValue(path, out ParserOptions opts))
+            {
+                return opts;
+            }
+
+            var optionsStr = await _blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
+            var options = JsonConvert.DeserializeObject<ParserOptions>(optionsStr);
+
+            _parserOptions.Add(path, options);
+
+            return options;
         }
 
         public async Task<ExhaustData> GetExhaustDataAsync(string tractor, string segment)
@@ -48,6 +68,7 @@ namespace Arduino.Repository
                 return null;
             }
 
+            var options = GetParserOptions(tractor);
             var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
             return SensorDataParser.Exhaust.Parse(lines);
