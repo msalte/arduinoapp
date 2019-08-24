@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Arduino.Business;
 using Arduino.Repository;
 using Arduino.Storage;
 using Microsoft.AspNetCore.Builder;
@@ -20,6 +21,7 @@ namespace Arduino
             services.AddMvc();
             services.AddScoped<IBlobStorageClient, BlobStorageClient>();
             services.AddScoped<ISensorDataRepository, SensorDataRepository>();
+            services.AddScoped<IDataParser, DataParser>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

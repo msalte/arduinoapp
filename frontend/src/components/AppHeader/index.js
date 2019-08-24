@@ -32,7 +32,7 @@ const TractorPicker = ({ defaultValue, onSelect }) => {
         <Menu.Item name="tractor">
             {isFetching && <Loader size="tiny" active />}
             {error && error}
-            <Icon name="microchip" />
+            <Icon name="microchip" color="green" inverted bordered />
             <Dropdown
                 key={defaultValue}
                 search
@@ -78,7 +78,13 @@ const SegmentPicker = ({ tractor, defaultValue, onSelect }) => {
         <Menu.Item name="segment">
             {isFetching && <Loader size="tiny" active />}
             {error && error}
-            <Icon name="chart line" />
+            <Icon
+                name="chart line"
+                color="violet"
+                inverted
+                bordered
+                disabled={isFetching || tractor === undefined}
+            />
             <Dropdown
                 disabled={isFetching || tractor === undefined}
                 search
@@ -128,7 +134,7 @@ export default ({ match, history }) => {
     return (
         <Menu stackable borderless className={classNames(styles.container)}>
             <Menu.Item>
-                <Link to="/" onClick={handleHomeClick}>
+                <Link className={classNames(styles.homeLink)} to="/" onClick={handleHomeClick}>
                     <Icon name="home" />
                 </Link>
             </Menu.Item>

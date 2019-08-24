@@ -3,6 +3,7 @@ using Arduino.Models;
 using Arduino.Storage;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,9 +12,9 @@ namespace Arduino.Repository
 {
     public interface ISensorDataRepository
     {
-        Task<ExhaustData> GetExhaustDataAsync(string tractor, string segment);
-        Task<PressureData> GetPressureDataAsync(string tractor, string segment);
-        Task<MiscData> GetMiscDataAsync(string tractor, string segment);
+        Task<IList<ParsedEntry>> GetExhaustDataAsync(string tractor, string segment);
+        Task<IList<ParsedEntry>> GetPressureDataAsync(string tractor, string segment);
+        Task<IList<ParsedEntry>> GetMiscDataAsync(string tractor, string segment);
         Task<List<string>> ListFolder(string parent);
         Task<string> GenerateSharedAccessSignature();
     }
@@ -26,18 +27,20 @@ namespace Arduino.Repository
 
         private const string BLOB_CONTAINER_NAME = "sensordata";
 
-        private readonly IBlobStorageClient _blobStorageClient;
+        private readonly IBlobStorageClient blobStorageClient;
 
-        private static Dictionary<string, ParserOptions> _parserOptions = new Dictionary<string, ParserOptions>();
+        private static ConcurrentDictionary<string, ParserOptions> _parserOptions = new ConcurrentDictionary<string, ParserOptions>();
+        private readonly IDataParser dataParser;
 
-        public SensorDataRepository(IBlobStorageClient blobStorageClient)
+        public SensorDataRepository(IBlobStorageClient blobStorageClient, IDataParser dataParser)
         {
-            _blobStorageClient = blobStorageClient;
+            this.blobStorageClient = blobStorageClient;
+            this.dataParser = dataParser;
         }
 
         public async Task<string> GenerateSharedAccessSignature()
         {
-            return await _blobStorageClient.GenerateSASForContainer(BLOB_CONTAINER_NAME);
+            return await blobStorageClient.GenerateSASForContainer(BLOB_CONTAINER_NAME);
         }
 
         private async Task<ParserOptions> GetParserOptions(string tractor)
@@ -49,66 +52,68 @@ namespace Arduino.Repository
                 return opts;
             }
 
-            var optionsStr = await _blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
+            var optionsStr = await blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
             var options = JsonConvert.DeserializeObject<ParserOptions>(optionsStr);
 
-            _parserOptions.Add(path, options);
+            _parserOptions.TryAdd(path, options);
 
             return options;
         }
 
-        public async Task<ExhaustData> GetExhaustDataAsync(string tractor, string segment)
+        public async Task<IList<ParsedEntry>> GetExhaustDataAsync(string tractor, string segment)
         {
             var path = $"{tractor}/data/{segment}/{BLOB_NAME_EXHAUST}";
 
-            var text = await _blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
+            var text = await blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
 
             if (text == null)
             {
                 return null;
             }
 
-            var options = GetParserOptions(tractor);
+            var options = await GetParserOptions(tractor);
             var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-            return SensorDataParser.Exhaust.Parse(lines);
+            return dataParser.ParseFile(lines, options.Temperature.Exhaust);
         }
 
-        public async Task<MiscData> GetMiscDataAsync(string tractor, string segment)
+        public async Task<IList<ParsedEntry>> GetMiscDataAsync(string tractor, string segment)
         {
             var path = $"{tractor}/data/{segment}/{BLOB_NAME_MISC}";
 
-            var text = await _blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
+            var text = await blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
 
             if (text == null)
             {
                 return null;
             }
 
+            var options = await GetParserOptions(tractor);
             var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-            return SensorDataParser.Misc.Parse(lines);
+            return dataParser.ParseFile(lines, options.Temperature.Misc);
         }
 
-        public async Task<PressureData> GetPressureDataAsync(string tractor, string segment)
+        public async Task<IList<ParsedEntry>> GetPressureDataAsync(string tractor, string segment)
         {
             var path = $"{tractor}/data/{segment}/{BLOB_NAME_PRESSURE}";
 
-            var text = await _blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
+            var text = await blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
 
             if (text == null)
             {
                 return null;
             }
 
+            var options = await GetParserOptions(tractor);
             var lines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-            return SensorDataParser.Pressure.Parse(lines);
+            return dataParser.ParseFile(lines, options.Pressure);
         }
 
         public async Task<List<string>> ListFolder(string path)
         {
-            var uris = await _blobStorageClient.ListFolder(BLOB_CONTAINER_NAME, path);
+            var uris = await blobStorageClient.ListFolder(BLOB_CONTAINER_NAME, path);
 
             var folderNames = uris.Select(i => i.Segments.Last().Replace("/", "")).ToList();
 

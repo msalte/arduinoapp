@@ -1,4 +1,9 @@
 .container {
     display: flex;
     flex-shrink: 0;
+
+    .homeLink {
+        color: #333;
+        text-decoration: none;
+    }
 }
