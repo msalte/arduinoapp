@@ -146,6 +146,7 @@ export default ({ match, history }) => {
                 Select segment
             </Menu.Item>
             <SegmentPicker
+                key={`segment-picker-${selectedTractor}`}
                 tractor={selectedTractor}
                 defaultValue={selectedSegment}
                 onSelect={handleSegmentSelect}
