@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import Chart from "./Chart";
 import { fetch } from "global/fetch";
-import chartOptionsResolver from "./chartOptions/chartOptionsResolver";
+import chartOptionsResolver from "./Chart/chartOptions/chartOptionsResolver";
 import styles from "./styles.scss";
 import { Icon, Card } from "semantic-ui-react";
 
