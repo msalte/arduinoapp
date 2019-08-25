@@ -3,6 +3,9 @@ import highcharts from "highcharts/highstock";
 import HighchartsReact from "highcharts-react-official";
 import styles from "./styles.scss";
 import { Loader, Icon } from "semantic-ui-react";
+import chartOptions from "./options";
+
+export { chartOptions };
 
 export default ({ date, name, dataPromise, optionsCreatorCallback }) => {
     const [data, setData] = useState(null);

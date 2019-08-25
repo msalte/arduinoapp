@@ -1,27 +1,19 @@
 import React, { useCallback } from "react";
-import Chart from "./Chart";
+import Chart, { chartOptions } from "./Chart";
 import { fetch } from "global/fetch";
-import chartOptionsResolver from "./Chart/chartOptions/chartOptionsResolver";
 import styles from "./styles.scss";
 import { Icon, Card } from "semantic-ui-react";
+
+const dataUrl = (tractor, segment, type) => `/tractors/${tractor}/segments/${segment}/${type}`;
 
 export default ({ match }) => {
     const {
         params: { tractor, segment },
     } = match;
 
-    const exhaustDataPromise = useCallback(
-        () => fetch(`/tractors/${tractor}/segments/${segment}/exhaust`),
-        [segment]
-    );
-    const pressureDataPromise = useCallback(
-        () => fetch(`/tractors/${tractor}/segments/${segment}/pressure`),
-        [segment]
-    );
-    const miscDataPromise = useCallback(
-        () => fetch(`/tractors/${tractor}/segments/${segment}/misc`),
-        [segment]
-    );
+    const exhaustPromise = useCallback(() => fetch(dataUrl(tractor, segment, "exhaust")), [segment]);
+    const pressurePromise = useCallback(() => fetch(dataUrl(tractor, segment, "pressure")), [segment]);
+    const miscPromise = useCallback(() => fetch(dataUrl(tractor, segment, "misc")), [segment]);
 
     if (!tractor || !segment) {
         return (
@@ -29,9 +21,7 @@ export default ({ match }) => {
                 <Card.Content>
                     <Icon name="arrow right" /> Arduino graph collection
                 </Card.Content>
-                <Card.Content>
-                    Start by selecting a tractor and a segment in the top menu...
-                </Card.Content>
+                <Card.Content>Start by selecting a tractor and a segment in the top menu...</Card.Content>
             </Card>
         );
     }
@@ -41,20 +31,20 @@ export default ({ match }) => {
             <Chart
                 key={`Exhaust: ${segment}`}
                 name="Exhaust temperatures (°C)"
-                dataPromise={() => exhaustDataPromise()}
-                optionsCreatorCallback={data => chartOptionsResolver(data, "Temperature", "C")}
+                dataPromise={() => exhaustPromise()}
+                optionsCreatorCallback={data => chartOptions(data, "Temperature", "C")}
             />
             <Chart
                 key={`Pressure: ${segment}`}
                 name="Pressure (bar)"
-                dataPromise={() => pressureDataPromise()}
-                optionsCreatorCallback={data => chartOptionsResolver(data, "Pressure", "bar")}
+                dataPromise={() => pressurePromise()}
+                optionsCreatorCallback={data => chartOptions(data, "Pressure", "bar")}
             />
             <Chart
                 key={`Misc.: ${segment}`}
                 name="Miscellaneous temperatures (°C)"
-                dataPromise={() => miscDataPromise()}
-                optionsCreatorCallback={data => chartOptionsResolver(data, "Temperature", "C")}
+                dataPromise={() => miscPromise()}
+                optionsCreatorCallback={data => chartOptions(data, "Temperature", "C")}
             />
         </div>
     );

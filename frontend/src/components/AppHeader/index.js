@@ -78,13 +78,7 @@ const SegmentPicker = ({ tractor, defaultValue, onSelect }) => {
         <Menu.Item name="segment">
             {isFetching && <Loader size="tiny" active />}
             {error && error}
-            <Icon
-                name="chart line"
-                color="violet"
-                inverted
-                bordered
-                disabled={isFetching || tractor === undefined}
-            />
+            <Icon name="chart line" color="violet" inverted bordered disabled={isFetching || tractor === undefined} />
             <Dropdown
                 disabled={isFetching || tractor === undefined}
                 search
@@ -152,12 +146,7 @@ export default ({ match, history }) => {
                 onSelect={handleSegmentSelect}
             />
             <LargerThanPhone>
-                <Menu.Item
-                    disabled
-                    onClick={() => console.log("clicked options")}
-                    position="right"
-                    name="options"
-                >
+                <Menu.Item disabled onClick={() => console.log("clicked options")} position="right" name="options">
                     <Icon name="wrench" /> Options
                 </Menu.Item>
             </LargerThanPhone>

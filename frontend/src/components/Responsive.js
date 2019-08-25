@@ -78,5 +78,4 @@ export const Desktop = ({ children, ...props }) => {
 };
 
 export const isPhone = () => matchMedia(`only screen and (max-width: ${phoneMaxWidth}px)`).matches;
-export const isTablet = () =>
-    matchMedia(`only screen and (max-width: ${tabletMaxWidth}px)`).matches;
+export const isTablet = () => matchMedia(`only screen and (max-width: ${tabletMaxWidth}px)`).matches;

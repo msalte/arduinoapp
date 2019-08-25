@@ -29,7 +29,8 @@ namespace Arduino.Repository
 
         private readonly IBlobStorageClient blobStorageClient;
 
-        private static ConcurrentDictionary<string, ParserOptions> _parserOptions = new ConcurrentDictionary<string, ParserOptions>();
+        private static readonly ConcurrentDictionary<string, ParserOptions> parserOptionsCache = new ConcurrentDictionary<string, ParserOptions>();
+
         private readonly IDataParser dataParser;
 
         public SensorDataRepository(IBlobStorageClient blobStorageClient, IDataParser dataParser)
@@ -47,7 +48,7 @@ namespace Arduino.Repository
         {
             var path = $"{tractor}/options.json";
 
-            if (_parserOptions.TryGetValue(path, out ParserOptions opts))
+            if (parserOptionsCache.TryGetValue(path, out ParserOptions opts))
             {
                 return opts;
             }
@@ -55,7 +56,7 @@ namespace Arduino.Repository
             var optionsStr = await blobStorageClient.ReadBlobAsStringAsync(BLOB_CONTAINER_NAME, path);
             var options = JsonConvert.DeserializeObject<ParserOptions>(optionsStr);
 
-            _parserOptions.TryAdd(path, options);
+            parserOptionsCache.TryAdd(path, options);
 
             return options;
         }
